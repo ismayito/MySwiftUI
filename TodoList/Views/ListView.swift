@@ -5,22 +5,23 @@
 //  Created by mac on 09/06/2026.
 //
 
-import SwiftUI
+internal import SwiftUI
 
 struct ListView: View {
-    @State var items:[ItemModel] = [
-        ItemModel(title: "This is title 1", isCompleted: false),
-        ItemModel(title: "This is title 2", isCompleted: true),
-        ItemModel(title: "This is title 3", isCompleted: false),
-        ItemModel(title: "This is title 4", isCompleted: true)
-]
-    
+    @EnvironmentObject var listViewModel:ListViewModel
     var body: some View {
         List {
-            ForEach(items) { item in
+            ForEach(listViewModel.items) { item in
                 ListViewRowItem(item:item
                 )
+                .onTapGesture {
+                    withAnimation {
+                        listViewModel.updateItem(item:item)
+                    }
+                }
             }
+            .onDelete(perform: listViewModel.deleteItems)
+            .onMove(perform:listViewModel .moveItems)
         }
         .listStyle(.plain)
         .navigationTitle(Text("To Do List 📝"))
@@ -41,4 +42,5 @@ struct ListView: View {
     NavigationView {
         ListView()
     }
+    .environmentObject(ListViewModel())
 }
