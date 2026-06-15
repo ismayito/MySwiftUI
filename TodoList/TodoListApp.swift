@@ -5,7 +5,7 @@
 //  Created by mac on 09/06/2026.
 //
 
-import SwiftUI
+internal import SwiftUI
 
 /*
  MVVM
@@ -16,11 +16,14 @@ import SwiftUI
 
 @main
 struct TodoListApp: App {
+   @StateObject var listViewModel: ListViewModel = ListViewModel()
+    
     var body: some Scene {
         WindowGroup {
             NavigationView(){
                 ListView()
             }
+            .environmentObject(listViewModel)
         }
     }
 }

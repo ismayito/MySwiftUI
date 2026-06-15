@@ -5,7 +5,7 @@
 //  Created by mac on 09/06/2026.
 //
 
-import SwiftUI
+internal import SwiftUI
 
 struct ListViewRowItem: View {
     
