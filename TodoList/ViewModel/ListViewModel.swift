@@ -22,19 +22,35 @@ internal import SwiftUI
 
 class ListViewModel: ObservableObject {
     
-    @Published var items: [ItemModel] = []
+    @Published var items: [ItemModel] = []{
+        didSet {
+            saveItems()
+        }
+    }
+    let itemsKey:String = "items_data"
     
     init() {
         getItems()
     }
     
     func getItems() {
-        let newitems = [
-            ItemModel(title: "Buy groceries", isCompleted: false),
-            ItemModel(title: "Read a book", isCompleted: true),
-            ItemModel(title: "Go for a walk", isCompleted: false)
-        ]
-        items.append(contentsOf: newitems)
+//        let newitems = [
+//            ItemModel(title: "Buy groceries", isCompleted: false),
+//            ItemModel(title: "Read a book", isCompleted: true),
+//            ItemModel(title: "Go for a walk", isCompleted: false)
+//        ]
+//        items.append(contentsOf: newitems)
+        
+        guard let data = UserDefaults.standard.data(forKey: itemsKey) else {
+            return
+        }
+        
+        guard let savedItems = try? JSONDecoder().decode([ItemModel].self, from: data) else {
+            return
+        }
+        
+        self.items = savedItems
+        
     }
     
     // Matches ListView.onDelete(perform: listViewModel.deleteItems)
@@ -59,4 +75,12 @@ class ListViewModel: ObservableObject {
             items[index] = item.updateCompletion()
         }
     }
+    
+    func saveItems() {
+        if let encodedData = try? JSONEncoder().encode(items) {
+            UserDefaults.standard.setValue(encodedData, forKey: itemsKey)
+            
+        }
+    }
 }
+
